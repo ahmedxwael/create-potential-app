@@ -1,7 +1,11 @@
 {
   "name": "create-potential-app",
   "version": "0.0.1",
-  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "create-potential-app": "./bin/cli.js"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build && npm run build:cli",
@@ -9,10 +13,9 @@
     "lint": "next lint",
     "format": "npx prettier --write ./**/*.{js,ts,jsx,tsx} --config ./.prettierrc.json",
     "tsc": "npx tsc --noEmit",
-    "build:cli": "tsc --project tsconfig.cli.json"
-  },
-  "bin": {
-    "create-potential-app": "./bin/cli.js"
+    "cli:clean": "rm -rf bin",
+    "cli:build": "tsc --project tsconfig.cli.json",
+    "cli:run": "node bin/cli.js"
   },
   "dependencies": {
     "inquirer": "^12.3.0",
