@@ -18,7 +18,9 @@
         "name": "next"
       }
     ],
-    "paths": {},
+    "paths": {
+      "@/*": ["./src/*"]
+    },
     "outDir": "./dist",
     "rootDir": "./"
   },

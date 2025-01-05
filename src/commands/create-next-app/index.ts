@@ -1,35 +1,26 @@
-import { AppInfo } from "@/types";
 import { spawn } from "child_process";
-import { copyFile } from "fs";
+import { promises as fs } from "fs";
 import { join } from "path";
-import { promisify } from "util";
+import { AppInfo } from "../../types";
 
 /**
- * Creates a new Next.js app based on the "next" template.
+ * Creates a new Next.js application using a specified template.
  *
- * This function asks the user for a project name and then uses the
- * `@vercel/ncc` package to create a new Next.js app based on the
- * template stored in the "templates/next" directory. It also copies
- * the GitHub-related files from the template to the new project.
+ * @param {AppInfo} appInfo - Information about the application to be created.
+ * @throws Will throw an error if the application name is not provided or if the creation process fails.
  */
-export async function createNextApp(appInfo: AppInfo) {
-  // The `copyFile` function is a callback-based function, but we want to
-  // use it with async/await. So we use the `promisify` function from
-  // the `util` module to convert it to a promise-returning function.
-  const copyAsync = promisify(copyFile);
-
+export async function createNextApp(appInfo: AppInfo): Promise<void> {
   if (!appInfo.name) {
-    throw new Error("Missing required argument: projectName");
+    throw new Error("Application name is required.");
   }
 
-  console.log(`Creating ${appInfo.name} ${appInfo.type} project...`);
+  console.log(`Creating a new Next.js app in ${appInfo.name}...`);
 
-  // Create a new Next.js app based on the "next" template
+  // Run the create-next-app command with the specified template
   const child = spawn(
     "npx",
     [
-      "next",
-      "new",
+      "create-next-app",
       appInfo.name,
       "--example",
       join(__dirname, "templates/next"),
@@ -37,15 +28,34 @@ export async function createNextApp(appInfo: AppInfo) {
     { stdio: "inherit" }
   );
 
-  child.on("close", (code) => {
-    if (code !== 0) {
-      throw new Error(`next new exited with code ${code}`);
-    }
+  // Handle the close event of the child process
+  const exitCode = await new Promise<number>((resolve, reject) => {
+    child.on("close", resolve);
+    child.on("error", reject);
   });
 
+  if (exitCode !== 0) {
+    throw new Error(`create-next-app exited with code ${exitCode}`);
+  }
+
+  // Ensure the destination directory exists
+  const destDir = join(process.cwd(), appInfo.name, ".github");
+
+  try {
+    await fs.mkdir(destDir, { recursive: true });
+  } catch (error) {
+    throw new Error(`Failed to create directory ${destDir}: ${error}`);
+  }
+
   // Copy the GitHub-related files from the template to the new project
-  await copyAsync(
-    join(__dirname, "templates/next", "github", ".github"),
-    join(process.cwd(), appInfo.name, ".github")
-  );
+  try {
+    await fs.copyFile(
+      join(__dirname, "templates/next", "github", ".github"),
+      destDir
+    );
+  } catch (error) {
+    throw new Error(`Failed to copy .github files: ${error}`);
+  }
+
+  console.log(`Project ${appInfo.name} created successfully.`);
 }

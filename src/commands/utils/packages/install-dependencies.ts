@@ -1,5 +1,5 @@
 import { exec } from "child_process";
-import { confirmAction } from "./confirm-action";
+import { confirmAction } from "../confirm-action";
 import { getInstallCommand } from "./package-manager";
 
 export async function installDependencies() {
