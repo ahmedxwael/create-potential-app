@@ -1,4 +1,4 @@
-import { AppInfo } from "@/index";
+import { AppInfo } from "@/types";
 import { spawn } from "child_process";
 import { copyFile } from "fs";
 import { join } from "path";
