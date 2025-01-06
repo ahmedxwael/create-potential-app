@@ -1,6 +1,6 @@
-import { GenericObject } from "@/types";
 import fs from "fs";
 import path from "path";
+import { GenericObject } from "../../../types";
 import { confirmAction } from "../confirm-action";
 import { getLatestVersion } from "../packages/package-manager";
 
