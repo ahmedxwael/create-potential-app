@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "CommonJS",
+    "target": "ESNext",
+    "module": "ESNext",
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -12,11 +12,6 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    "tsBuildInfoFile": "./.tsbuildinfo",
     "paths": {},
-    "outDir": "./dist",
-    "rootDir": "./"
   },
-  "include": ["src/**/*.ts", "bin/**/*.ts"],
-  "exclude": ["node_modules"]
 }

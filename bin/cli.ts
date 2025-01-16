@@ -2,6 +2,7 @@
 
 import { createApp } from "../src";
 
+
 (async () => {
   await createApp();
 })();
